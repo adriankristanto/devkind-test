@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema(
 // finally, we don't want to reveal the password hash of the user to the client
 userSchema.set("toJSON", {
   transform: (document, returnedObject) => {
-    returnedObject.id = returnedObject.id.toString();
+    returnedObject.id = returnedObject._id.toString();
     delete returnedObject._id;
     delete returnedObject.__v;
     delete returnedObject.passwordHash;
