@@ -87,12 +87,14 @@ usersRouter.post(
   async (request, response, next) => {
     try {
       const user = await User.findOne({ email: request.user.email });
+
       user.name = request.body.name || user.name;
       user.email = request.body.email || user.email;
       user.birthdate = request.body.birthdate || user.birthdate;
       user.passwordHash = request.body.password
         ? await bcrypt.hash(request.body.password, SALT_ROUNDS)
         : user.passwordHash;
+
       const savedUser = await user.save();
       response.status(201).json(savedUser);
     } catch (exception) {
