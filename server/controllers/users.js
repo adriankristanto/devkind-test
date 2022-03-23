@@ -4,6 +4,8 @@ const User = require("../models/user");
 const logger = require("../utils/logger");
 const middleware = require("../utils/middleware");
 const validator = require("../utils/validator");
+const jwt = require("jsonwebtoken");
+const config = require("../utils/config");
 
 const SALT_ROUNDS = 10;
 
@@ -75,8 +77,14 @@ usersRouter.post(
 
     try {
       const savedUser = await user.save();
+      const userForToken = {
+        email: savedUser.email,
+        id: savedUser._id,
+      };
+
+      const token = jwt.sign(userForToken, config.SECRET, { expiresIn: "1h" });
       logger.info(`successful user registration attempt: ${email}`);
-      response.status(201).json(savedUser);
+      response.status(201).json({ token, ...savedUser.toJSON() });
     } catch (exception) {
       next(exception);
     }
