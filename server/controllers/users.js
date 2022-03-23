@@ -4,6 +4,8 @@ const User = require("../models/user");
 const middleware = require("../utils/middleware");
 const validator = require("../utils/validator");
 
+const SALT_ROUNDS = 10;
+
 // create a user when a user is registering to the authentication system
 usersRouter.post(
   "/",
@@ -50,8 +52,7 @@ usersRouter.post(
     }
 
     // 2 ^ 10 hashing iterations (Reference: https://stackoverflow.com/questions/46693430/what-are-salt-rounds-and-how-are-salts-stored-in-bcrypt)
-    const saltRounds = 10;
-    const passwordHash = await bcrypt.hash(password, saltRounds);
+    const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
 
     const user = new User({
       name,
@@ -77,5 +78,27 @@ usersRouter.get("/profile", middleware.verifyJWT, async (request, response) => {
     next(exception);
   }
 });
+
+usersRouter.post(
+  "/profile",
+  middleware.verifyJWT,
+  validator.validateEmail,
+  validator.validateBirthdate,
+  async (request, response, next) => {
+    try {
+      const user = await User.findOne({ email: request.user.email });
+      user.name = request.body.name || user.name;
+      user.email = request.body.email || user.email;
+      user.birthdate = request.body.birthdate || user.birthdate;
+      user.passwordHash = request.body.password
+        ? await bcrypt.hash(request.body.password, SALT_ROUNDS)
+        : user.passwordHash;
+      const savedUser = await user.save();
+      response.status(201).json(savedUser);
+    } catch (exception) {
+      next(exception);
+    }
+  }
+);
 
 module.exports = usersRouter;
