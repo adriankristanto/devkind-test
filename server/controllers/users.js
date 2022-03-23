@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const usersRouter = require("express").Router();
 const User = require("../models/user");
+const middleware = require("../utils/middleware");
 const validator = require("../utils/validator");
 
 // create a user when a user is registering to the authentication system
@@ -67,5 +68,14 @@ usersRouter.post(
     }
   }
 );
+
+usersRouter.get("/profile", middleware.verifyJWT, async (request, response) => {
+  try {
+    const user = await User.findOne({ email: request.user.email });
+    response.json(user);
+  } catch (exception) {
+    next(exception);
+  }
+});
 
 module.exports = usersRouter;
