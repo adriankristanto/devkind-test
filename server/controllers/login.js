@@ -41,7 +41,9 @@ loginRouter.post(
 
     const token = jwt.sign(userForToken, config.SECRET, { expiresIn: "1h" });
 
-    response.status(200).send({ token, email: user.email, name: user.name });
+    response
+      .status(200)
+      .send({ token, email: user.email, name: user.name, id: user._id });
   }
 );
 
