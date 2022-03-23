@@ -21,15 +21,14 @@ const userSchema = new mongoose.Schema(
 );
 
 // modify the toJSON method of the schema to format the objects returned by Mongoose
-// in this case, we don't want to reveal the mongo versioning field __v to the client.
-// we also don't want to reveal the password hash of the user to the client
-// finally, we need to convert the object id _id to string
+// in this case, we need to convert the object id _id to string
+// we also don't want to return the mongo versioning field __v to the client.
+// finally, we don't want to reveal the password hash of the user to the client
 userSchema.set("toJSON", {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject.id.toString();
     delete returnedObject._id;
     delete returnedObject.__v;
-    // do not reveal the password hash
     delete returnedObject.passwordHash;
   },
 });
