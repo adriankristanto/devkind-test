@@ -9,12 +9,12 @@ const loginRouter = require("./controllers/login");
 
 const app = express();
 
-logger.info(`connecting to ${config.MONGODB_URI}`);
+logger.debug(`connecting to ${config.MONGODB_URI}`);
 
 mongoose
   .connect(config.MONGODB_URI)
   .then(() => {
-    logger.info("connected to MongoDB");
+    logger.debug("connected to MongoDB");
   })
   .catch((error) => {
     logger.error(`error connecting to MongoDB: ${error.message}`);
