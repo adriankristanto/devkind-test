@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const usersRouter = require("express").Router();
 const User = require("../models/user");
+const logger = require("../utils/logger");
 const middleware = require("../utils/middleware");
 const validator = require("../utils/validator");
 
@@ -15,6 +16,11 @@ usersRouter.post(
     // validate email and birthdate
     const errors = validator.validationResult(request);
     if (!errors.isEmpty()) {
+      logger.info(
+        `unsuccessful user registration attempt due to input validation failure: ${errors
+          .array()
+          .map((error) => JSON.stringify(error))}`
+      );
       return response.status(400).json({
         errors: errors.array(),
       });
@@ -25,6 +31,9 @@ usersRouter.post(
     // check for duplicate email address
     const existingUser = await User.findOne({ email });
     if (existingUser) {
+      logger.info(
+        `unsuccessful user registration attempt due to email duplication: ${email}`
+      );
       return response.status(400).json({
         error: "email address has already been taken",
       });
@@ -46,6 +55,9 @@ usersRouter.post(
       convertedBirthdate.getFullYear() -
       (isBirthdateNotPassed ? 1 : 0);
     if (age < 18) {
+      logger.info(
+        `unsuccessful user registration attempt due to the user being under 18 years old: ${email}`
+      );
       return response.status(400).json({
         error: "user must be at least 18 years old to register",
       });
@@ -63,6 +75,7 @@ usersRouter.post(
 
     try {
       const savedUser = await user.save();
+      logger.info(`successful user registration attempt: ${email}`);
       response.status(201).json(savedUser);
     } catch (exception) {
       next(exception);
@@ -72,6 +85,7 @@ usersRouter.post(
 
 usersRouter.get("/profile", middleware.verifyJWT, async (request, response) => {
   try {
+    logger.info(`fetching user profile: ${request.user.email}`);
     const user = await User.findOne({ email: request.user.email });
     response.json(user);
   } catch (exception) {
@@ -86,7 +100,22 @@ usersRouter.post(
   validator.validateBirthdate,
   async (request, response, next) => {
     try {
+      // validate email and birthdate
+      const errors = validator.validationResult(request);
+      if (!errors.isEmpty()) {
+        logger.info(
+          `unsuccessful user profile update attempt due to input validation failure: ${errors
+            .array()
+            .map((error) => JSON.stringify(error))}`
+        );
+        return response.status(400).json({
+          errors: errors.array(),
+        });
+      }
+
       const user = await User.findOne({ email: request.user.email });
+
+      const userCopy = { ...user };
 
       user.name = request.body.name || user.name;
       user.email = request.body.email || user.email;
@@ -96,6 +125,11 @@ usersRouter.post(
         : user.passwordHash;
 
       const savedUser = await user.save();
+      logger.info(
+        `successful user profile update attempt: old profile: ${JSON.stringify(
+          userCopy
+        )}, new profile: ${JSON.stringify(user)}`
+      );
       response.status(201).json(savedUser);
     } catch (exception) {
       next(exception);

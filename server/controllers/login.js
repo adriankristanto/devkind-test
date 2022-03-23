@@ -4,6 +4,7 @@ const loginRouter = require("express").Router();
 const User = require("../models/user");
 const validator = require("../utils/validator");
 const config = require("../utils/config");
+const logger = require("../utils/logger");
 
 loginRouter.post(
   "/",
@@ -12,6 +13,11 @@ loginRouter.post(
     // validate email
     const errors = validator.validationResult(request);
     if (!errors.isEmpty()) {
+      logger.info(
+        `unsuccessful login attempt due to input validation failure: ${errors
+          .array()
+          .map((error) => JSON.stringify(error))}`
+      );
       return response.status(400).json({
         errors: errors.array(),
       });
@@ -27,6 +33,9 @@ loginRouter.post(
       user === null ? false : await bcrypt.compare(password, user.passwordHash);
 
     if (!(user && passwordCorrect)) {
+      logger.info(
+        `unsuccessful login attempt due to invalid email or password: ${email}`
+      );
       return response.status(401).json({
         error: "invalid email or password",
       });
@@ -40,6 +49,8 @@ loginRouter.post(
     };
 
     const token = jwt.sign(userForToken, config.SECRET, { expiresIn: "1h" });
+
+    logger.info(`successful login attempt: ${email}`);
 
     response.status(200).send({ token, ...user.toJSON() });
   }
