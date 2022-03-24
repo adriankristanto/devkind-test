@@ -34,6 +34,21 @@ export function AuthProvider({ children }) {
 
   function logout() {
     window.localStorage.removeItem("loggedInUser");
+    setCurrentUser();
+    setToken();
+  }
+
+  function updateUserProfile(email, password, name, birthdate) {
+    return axios.post(`${baseUrl}/users/profile`, {
+      email,
+      password,
+      name,
+      birthdate,
+    });
+  }
+
+  function getUserProfile() {
+    return axios.get(`${baseUrl}/users/profile`);
   }
 
   const value = {
@@ -44,6 +59,8 @@ export function AuthProvider({ children }) {
     logout,
     setCurrentUser,
     setToken,
+    getUserProfile,
+    updateUserProfile,
   };
 
   return (
