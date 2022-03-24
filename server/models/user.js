@@ -31,6 +31,14 @@ const userSchema = new mongoose.Schema(
 userSchema.set("toJSON", {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString();
+    const year = returnedObject.birthdate.getFullYear();
+    // pad the month with 0 if length is less than 2, e.g. 02 instead of 2, but keep 11 as it is
+    const month = String(returnedObject.birthdate.getMonth() + 1).padStart(
+      2,
+      "0"
+    );
+    const date = returnedObject.birthdate.getDate();
+    returnedObject.birthdate = `${year}/${month}/${date}`;
     delete returnedObject._id;
     delete returnedObject.__v;
     delete returnedObject.passwordHash;
