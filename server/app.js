@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const logger = require("./utils/logger");
 const config = require("./utils/config");
 const loginRouter = require("./controllers/login");
+const path = require("path");
 
 const app = express();
 
@@ -22,10 +23,15 @@ mongoose
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static("build"));
 
 app.use("/api/users", usersRouter);
 app.use("/api/login", loginRouter);
+
+app.use(express.static("build"));
+
+app.get("*", (request, response) => {
+  response.sendFile(path.join(__dirname + "/build/index.html"));
+});
 
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);
