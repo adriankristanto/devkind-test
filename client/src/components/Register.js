@@ -12,6 +12,7 @@ export default function Register() {
     const { name, birthdate, email, password } = values;
     try {
       const user = await register(email, password, name, birthdate);
+      window.localStorage.setItem("loggedInUser", JSON.stringify(user));
       setCurrentUser(user);
       setToken(user.token);
       navigate("/");

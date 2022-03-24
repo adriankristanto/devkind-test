@@ -12,6 +12,7 @@ export default function Login() {
     const { email, password } = values;
     try {
       const user = await login(email, password);
+      window.localStorage.setItem("loggedInUser", JSON.stringify(user));
       setCurrentUser(user);
       setToken(user.token);
       navigate("/");
