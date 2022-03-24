@@ -44,7 +44,7 @@ export default function Login() {
           <Field
             id="password"
             name="password"
-            placeholder="Create a new password here..."
+            placeholder="Enter your password here..."
             type="password"
           />
           <button type="submit">Submit</button>
