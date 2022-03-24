@@ -25,11 +25,11 @@ export function AuthProvider({ children }) {
   }, []);
 
   function register(email, password, name, birthdate) {
-    return axios.post(`${baseUrl}/users`, { email, password, name, birthdate });
+    return axios.post(`${baseUrl}users`, { email, password, name, birthdate });
   }
 
   function login(email, password) {
-    return axios.post(`${baseUrl}/login`, { email, password });
+    return axios.post(`${baseUrl}login`, { email, password });
   }
 
   function logout() {
@@ -40,7 +40,7 @@ export function AuthProvider({ children }) {
 
   function updateUserProfile(email, password, name, birthdate) {
     return axios.post(
-      `${baseUrl}/users/profile`,
+      `${baseUrl}users/profile`,
       {
         email,
         password,
@@ -52,7 +52,7 @@ export function AuthProvider({ children }) {
   }
 
   function getUserProfile() {
-    return axios.get(`${baseUrl}/users/profile`);
+    return axios.get(`${baseUrl}users/profile`);
   }
 
   const value = {
