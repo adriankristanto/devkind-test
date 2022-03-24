@@ -3,7 +3,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { Formik, Field, Form } from "formik";
 import { useNavigate, Link } from "react-router-dom";
 
-export default function Login() {
+export default function Login({ setMessage }) {
   const { login, setCurrentUser, setToken } = useAuth();
 
   const navigate = useNavigate();
@@ -16,9 +16,30 @@ export default function Login() {
       window.localStorage.setItem("loggedInUser", JSON.stringify(user));
       setCurrentUser(user);
       setToken(user.token);
+      setMessage({
+        text: "User Login Successful!",
+        error: false,
+      });
       navigate("/");
     } catch (exception) {
-      console.error(exception.response.data);
+      if (exception.response.data.errors) {
+        setMessage({
+          text: `User Login Error: ${exception.response.data.errors.map(
+            (error) => `${error.msg} for ${error.param}`
+          )}`,
+          error: true,
+        });
+      } else if (exception.response.data.error) {
+        setMessage({
+          text: `Invalid username or password`,
+          error: true,
+        });
+      } else {
+        setMessage({
+          text: "Something went wrong",
+          error: true,
+        });
+      }
     }
   };
 

@@ -3,7 +3,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { Formik, Field, Form } from "formik";
 import { useNavigate } from "react-router-dom";
 
-export default function Profile() {
+export default function Profile({ setMessage }) {
   const { currentUser, logout, updateUserProfile, setCurrentUser } = useAuth();
   const [isUpdating, setIsUpdating] = useState(false);
   const navigate = useNavigate();
@@ -19,15 +19,34 @@ export default function Profile() {
       );
       const user = updateResponse.data;
       setCurrentUser(user);
+      setMessage({
+        text: "User Profile Update Successful!",
+        error: false,
+      });
     } catch (exception) {
-      console.error(exception.response.data);
       if (
         exception.response.data.error &&
         (exception.response.data.error === "token missing or invalid" ||
           exception.response.data.error === "invalid token")
       ) {
+        setMessage({
+          text: `Invalid token. Please login again.`,
+          error: true,
+        });
         logout();
         navigate("/login");
+      } else if (exception.response.data.errors) {
+        setMessage({
+          text: `User Profile Update Error: ${exception.response.data.errors.map(
+            (error) => `${error.msg} for ${error.param}`
+          )}`,
+          error: true,
+        });
+      } else {
+        setMessage({
+          text: "Something went wrong",
+          error: true,
+        });
       }
     }
   };
