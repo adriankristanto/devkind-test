@@ -40,64 +40,101 @@ export default function Profile() {
   };
 
   return (
-    <div>
-      <h1>Profile</h1>
-      {isUpdating ? (
-        <>
-          <Formik
-            initialValues={{
-              name: `${currentUser.name}`,
-              birthdate: `${currentUser.birthdate}`,
-              email: `${currentUser.email}`,
-              password: "",
-            }}
-            onSubmit={handleSubmit}
-          >
-            <Form>
-              <label htmlFor="name">Name</label>
-              <Field
-                id="name"
-                name="name"
-                placeholder={`${currentUser.name}`}
-              />
+    <div className="container max-w-sm flex-1 flex flex-col items-center justify-center">
+      <div className="bg-white px-6 py-8 rounded shadow-md text-black w-full">
+        <h1 className="mb-8 text-3xl text-center">Profile</h1>
+        {isUpdating ? (
+          <>
+            <Formik
+              initialValues={{
+                name: `${currentUser.name}`,
+                birthdate: `${currentUser.birthdate}`,
+                email: `${currentUser.email}`,
+                password: "",
+              }}
+              onSubmit={handleSubmit}
+            >
+              <Form>
+                <label htmlFor="name">Name</label>
+                <Field
+                  id="name"
+                  name="name"
+                  placeholder={`${currentUser.name}`}
+                  className="w-full my-3 border border-gray-300 rounded p-3"
+                />
 
-              <label htmlFor="birthdate">Birthdate</label>
-              <Field
-                id="birthdate"
-                name="birthdate"
-                placeholder={`${currentUser.birthdate}`}
-              />
+                <label htmlFor="birthdate">Birthdate</label>
+                <Field
+                  id="birthdate"
+                  name="birthdate"
+                  placeholder={`${currentUser.birthdate}`}
+                  className="w-full my-3 border border-gray-300 rounded p-3"
+                />
 
-              <label htmlFor="email">Email</label>
-              <Field
-                id="email"
-                name="email"
-                placeholder={`${currentUser.email}`}
-                type="email"
-              />
+                <label htmlFor="email">Email</label>
+                <Field
+                  id="email"
+                  name="email"
+                  placeholder={`${currentUser.email}`}
+                  type="email"
+                  className="w-full my-3 border border-gray-300 rounded p-3"
+                />
 
-              <label htmlFor="password">Password</label>
-              <Field
-                id="password"
-                name="password"
-                placeholder="Enter a new password here..."
-                type="password"
-              />
-              <button type="submit">Submit</button>
-            </Form>
-          </Formik>
-          <button onClick={handleClickViewProfile}>View Profile</button>
-          <button onClick={handleClickLogOut}>Log Out</button>
-        </>
-      ) : (
-        <>
-          <div>{currentUser.name}</div>
-          <div>{currentUser.birthdate}</div>
-          <div>{currentUser.email}</div>
-          <button onClick={handleClickUpdateProfile}>Update Profile</button>
-          <button onClick={handleClickLogOut}>Log Out</button>
-        </>
-      )}
+                <label htmlFor="password">Password</label>
+                <Field
+                  id="password"
+                  name="password"
+                  placeholder="Enter a new password here..."
+                  type="password"
+                  className="w-full my-3 border border-gray-300 rounded p-3"
+                />
+                <button
+                  type="submit"
+                  className="w-full text-center py-3 mt-3 rounded bg-sky-400 text-gray-50 shadow-md"
+                >
+                  Submit
+                </button>
+              </Form>
+            </Formik>
+            <button
+              className="w-full text-center py-3 mt-3 rounded bg-purple-300 text-gray-50 shadow-md"
+              onClick={handleClickViewProfile}
+            >
+              View Profile
+            </button>
+            <button
+              className="w-full text-center py-3 mt-3 rounded bg-gray-400 text-gray-50 shadow-md"
+              onClick={handleClickLogOut}
+            >
+              Log Out
+            </button>
+          </>
+        ) : (
+          <>
+            <div className="w-full text-xl text-center">
+              <strong>{currentUser.name}</strong>
+            </div>
+            <div className="w-full text-gray-400 text-center">
+              {currentUser.email}
+            </div>
+            <div className="w-full my-4 text-center">
+              {currentUser.birthdate}
+            </div>
+            <button
+              className="w-full text-center py-3 mt-3 rounded bg-purple-300 text-gray-50 shadow-md"
+              onClick={handleClickUpdateProfile}
+            >
+              Update Profile
+            </button>
+            <button
+              className="w-full text-center py-3 mt-3 rounded bg-gray-400 text-gray-50 shadow-md"
+              onClick={handleClickLogOut}
+            >
+              Log Out
+            </button>
+          </>
+        )}
+      </div>
     </div>
   );
 }
