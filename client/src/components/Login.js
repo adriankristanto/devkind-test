@@ -24,7 +24,7 @@ export default function Login() {
 
   return (
     <div className="container max-w-sm flex-1 flex flex-col items-center justify-center">
-      <div class="bg-white px-6 py-8 rounded shadow-md text-black w-full">
+      <div className="bg-white px-6 py-8 rounded shadow-md text-black w-full">
         <h1 className="mb-8 text-3xl text-center">Login</h1>
         <Formik
           initialValues={{
