@@ -39,12 +39,16 @@ export function AuthProvider({ children }) {
   }
 
   function updateUserProfile(email, password, name, birthdate) {
-    return axios.post(`${baseUrl}/users/profile`, {
-      email,
-      password,
-      name,
-      birthdate,
-    });
+    return axios.post(
+      `${baseUrl}/users/profile`,
+      {
+        email,
+        password,
+        name,
+        birthdate,
+      },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
   }
 
   function getUserProfile() {
