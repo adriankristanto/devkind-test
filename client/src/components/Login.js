@@ -11,7 +11,8 @@ export default function Login() {
   const handleSubmit = async (values) => {
     const { email, password } = values;
     try {
-      const user = await login(email, password);
+      const loginResponse = await login(email, password);
+      const user = loginResponse.data;
       window.localStorage.setItem("loggedInUser", JSON.stringify(user));
       setCurrentUser(user);
       setToken(user.token);

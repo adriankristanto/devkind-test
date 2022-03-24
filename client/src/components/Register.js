@@ -11,7 +11,8 @@ export default function Register() {
   const handleSubmit = async (values) => {
     const { name, birthdate, email, password } = values;
     try {
-      const user = await register(email, password, name, birthdate);
+      const registerResponse = await register(email, password, name, birthdate);
+      const user = registerResponse.data;
       window.localStorage.setItem("loggedInUser", JSON.stringify(user));
       setCurrentUser(user);
       setToken(user.token);
