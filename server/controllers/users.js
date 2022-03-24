@@ -94,7 +94,7 @@ usersRouter.post(
 usersRouter.get("/profile", middleware.verifyJWT, async (request, response) => {
   try {
     logger.info(`fetching user profile: ${request.user.email}`);
-    const user = await User.findOne({ email: request.user.email });
+    const user = await User.findById(request.user.id);
     response.json(user);
   } catch (exception) {
     next(exception);
@@ -121,7 +121,7 @@ usersRouter.post(
         });
       }
 
-      const user = await User.findOne({ email: request.user.email });
+      const user = await User.findById(request.user.id);
 
       const userCopy = { ...user };
 
