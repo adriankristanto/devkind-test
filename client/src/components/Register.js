@@ -16,7 +16,7 @@ export default function Register() {
       setToken(user.token);
       navigate("/");
     } catch (exception) {
-      console.error(exception);
+      console.error(exception.response.data);
     }
   };
 
